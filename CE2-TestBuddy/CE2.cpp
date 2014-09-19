@@ -42,7 +42,6 @@ void add(ofstream out_stream, int& numOfItems, string name, string filename){
 	cout << "added to " << filename << ".txt: \"" << name.substr(4) << "\"" << endl;
 }
 
-
 void display(string filename){
 	ifstream readFile(filename);
 	string readSentence;
@@ -71,6 +70,37 @@ void print_vector(vector<Temp> &vec){
 		num++;
 	}
 }
+
+void search(string filename, string name){
+	vector<string> stringVec;
+	ifstream readFile(filename);
+	bool index = false;
+	string readSentence;
+	string keyword = name.substr(7);
+	cout << "The key word is \"" << keyword << "\"" << endl;
+	cout << "Here is/are the searching result: " << endl;
+	int keywordLength = stringLength(keyword);
+
+	while (getline(readFile, readSentence)){
+		// if nothing can be found in txt file, skill the seaching part.
+		if (readSentence == "" || readSentence == "\n")
+			break;
+
+		if (keywordLength > stringLength(readSentence))
+			continue;
+
+		index = false;
+
+		for (int i = 0; i < stringLength(readSentence) - keywordLength + 1; i++)
+		if (keyword == readSentence.substr(i, stringLength(keyword)))
+			index = true;
+
+		if (index == 1)
+			stringVec.push_back(readSentence.substr(3));
+	}
+	print_vector(stringVec);
+}
+
 
 void deleteLine(ifstream& in_stream, string filename, string name){
 	// create a 'replace.txt' to store the temporary data, except the sentence that we don't want.
@@ -169,6 +199,10 @@ int main()
 
 		else if (name.substr(0, 6) == "delete" || name.substr(0, 6) == "Delete" || name.substr(0, 6) == "DELETE")
 			deleteLine(in_stream, filename, name);
+
+		else if (name.substr(0, 6) == "search" || name.substr(0, 6) == "Search" || name.substr(0, 6) == "SEARCH")
+			search(filename, name);
+
 		else
 			cout << "Input Error. Please enter again" << endl;
 
